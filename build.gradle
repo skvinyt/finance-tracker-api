@@ -23,6 +23,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.flywaydb:flyway-database-postgresql'
+	// Spring Boot 4: стартер для AOP переименован
+    implementation 'org.springframework.boot:spring-boot-starter-aspectj'
+    // Resilience4j для Spring Boot 4 (версия 2.4.0 - первая с поддержкой SB4)
+    implementation 'io.github.resilience4j:resilience4j-spring-boot4:2.4.0'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
@@ -41,4 +45,16 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(JavaExec) {
+    jvmArgs = ['-Dfile.encoding=UTF-8']
+}
+
+tasks.withType(Test) {
+    systemProperty 'file.encoding', 'UTF-8'
 }
