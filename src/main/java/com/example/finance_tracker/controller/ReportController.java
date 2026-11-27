@@ -1,14 +1,12 @@
 package com.example.finance_tracker.controller;
 
-import java.util.Map;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.example.finance_tracker.dto.TransactionDto;
 import com.example.finance_tracker.service.ReportService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/reports")
@@ -24,5 +22,10 @@ public class ReportController {
     public ResponseEntity<Map<String, Object>> getReport(@PathVariable String reportType) {
         Map<String, Object> report = reportService.generateReport(reportType);
         return ResponseEntity.ok(report);
+    }
+
+    @GetMapping("/top-expenses")
+    public ResponseEntity<List<TransactionDto>> getTopExpenses() {
+        return ResponseEntity.ok(reportService.findTop3Expenses());
     }
 }
