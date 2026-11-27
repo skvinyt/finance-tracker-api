@@ -24,4 +24,4 @@
 1. Создайте БД `finance_tracker` в PostgreSQL.
 2. Настройте `application.properties` (пароль к БД).
 3. Запустите: `./gradlew bootRun` (Сервис поднимется на порту 8080).
-4. Для проверки уведомлений запустите также [notification-service](https://github.com/skvinyt/notification-service) на порту 8081.
+4. Для проверки уведомлений запустите также [notification-service](https://github.com/skvinyt/notification-service) на порту 8081. 
