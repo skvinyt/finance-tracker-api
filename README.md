@@ -18,10 +18,10 @@
 * **Отказоустойчивость**: `Circuit Breaker` (Resilience4j) перехватывает ошибки, если сервис уведомлений недоступен, и вызывает fallback-метод. Перевод при этом не падает.
 
 ## 🔗 Связанные репозитории
-* [Notification Service (Микросервис уведомлений)](https://github.com/твой-ник/notification-service)
+* [Notification Service (Микросервис уведомлений)](https://github.com/skvinyt/notification-service)
 
 ## 🚀 Запуск
 1. Создайте БД `finance_tracker` в PostgreSQL.
 2. Настройте `application.properties` (пароль к БД).
 3. Запустите: `./gradlew bootRun` (Сервис поднимется на порту 8080).
-4. Для проверки уведомлений запустите также [notification-service](https://github.com/твой-ник/notification-service) на порту 8081.
+4. Для проверки уведомлений запустите также [notification-service](https://github.com/skvinyt/notification-service) на порту 8081.
