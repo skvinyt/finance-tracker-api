@@ -3,6 +3,7 @@ package com.example.finance_tracker.service;
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,6 +11,7 @@ import com.example.finance_tracker.dto.TransferRequest;
 import com.example.finance_tracker.entity.Account;
 import com.example.finance_tracker.entity.Transaction;
 import com.example.finance_tracker.entity.TransactionType;
+import com.example.finance_tracker.event.TransferCompletedEvent;
 import com.example.finance_tracker.repository.AccountRepository;
 import com.example.finance_tracker.repository.TransactionRepository;
 
@@ -18,10 +20,14 @@ public class TransferService {
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public TransferService(AccountRepository accountRepository, TransactionRepository transactionRepository) {
+    public TransferService(AccountRepository accountRepository,
+                           TransactionRepository transactionRepository,
+                           ApplicationEventPublisher eventPublisher) {
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
@@ -40,7 +46,6 @@ public class TransferService {
         Account secondLocked = accountRepository.findByIdWithLock(secondId)
                 .orElseThrow(() -> new RuntimeException("Счет не найден: " + secondId));
 
-        // Распределяем, какой счет откуда, а какой куда
         Account fromAccount = firstLocked.getId().equals(request.getFromAccountId()) ? firstLocked : secondLocked;
         Account toAccount = firstLocked.getId().equals(request.getToAccountId()) ? firstLocked : secondLocked;
 
@@ -76,5 +81,13 @@ public class TransferService {
         income.setDescription("Перевод со счета " + fromAccount.getId());
         income.setCreatedAt(OffsetDateTime.now());
         transactionRepository.save(income);
+
+        // 8. Публикация события для асинхронной обработки
+        // (Слушатель получит это событие и выполнит свою работу в фоне)
+        eventPublisher.publishEvent(new TransferCompletedEvent(
+                fromAccount.getId(),
+                toAccount.getId(),
+                request.getAmount()
+        ));
     }
 }
